@@ -63,6 +63,34 @@ app.delete('/todos/:id', function (req, res) {
 
 });
 
+app.put('/todos/:id', function (req, res) {
+  var body = _.pick(req.body, 'description', 'completed');
+  var validAttributes = {};
+  var id = parseInt(req.params.id, 10);
+  var matchTodo = _.findWhere(todos, {id: id});
+
+  if (!matchTodo) {
+    res.status(404).send();
+  }
+
+  if (_.isBoolean(body.completed) && body.hasOwnProperty('completed')) {
+    validAttributes.completed = body.completed;
+  } else if (body.hasOwnProperty('completed')) {
+    return res.status(404).send();
+  }
+
+  if (_.isString(body.description) && body.hasOwnProperty('description') && body.description.trim().length > 0) {
+    validAttributes.description = body.description;
+  } else if (body.hasOwnProperty('description')) {
+    return res.status(404).send();
+  }
+
+  _.extend(matchTodo, validAttributes);
+  res.json(matchTodo);
+
+
+});
+
 app.listen(PORT, function (req, res) {
   console.log('Express Server is Running ' + PORT + '!');
 });
