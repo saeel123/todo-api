@@ -78,6 +78,7 @@ app.post('/todos', function (req, res) {
   });
 });
 
+
 app.delete('/todos/:id', function (req, res) {
   var id = parseInt(req.params.id, 10);
 
@@ -124,6 +125,20 @@ app.put('/todos/:id', function (req, res) {
       res.status(404).json(e);
   });
 
+});
+
+app.post('/user', function (req, res) {
+  var body = _.pick(req.body, 'email', 'password');
+
+  db.user.create(body).then(function (user) {
+    if (user) {
+      res.json(user.toJSON());
+    } else {
+      res.status(404).send();
+    }
+  },function (e) {
+      res.status(500).json(e);
+  });
 });
 
 db.sequelize.sync().then(function() {
