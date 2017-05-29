@@ -132,7 +132,7 @@ app.post('/user', function (req, res) {
 
   db.user.create(body).then(function (user) {
     if (user) {
-      res.json(user.toJSON());
+      res.json(user.toPublicJSON());
     } else {
       res.status(404).send();
     }
