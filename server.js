@@ -70,13 +70,13 @@ app.post('/todos', middleware.requireAuthentication, function (req, res) {
   var body = _.pick(req.body, 'description', 'completed');
 
   db.todo.create(body).then(function (todo) {
-    if (todo) {
+    req.user.addTodo(todo).then(function () {
+      return todo.reload();
+    }).then(function (todo) {
       res.json(todo.toJSON());
-    } else {
-      res.status(404).send();
-    }
+    });
   },function (e) {
-      res.status(500).json(e);
+      res.status(400).json(e);
   });
 });
 
@@ -162,7 +162,7 @@ app.post('/user/login', function (req, res) {
 });
 
 
-db.sequelize.sync({force: true}).then(function() {
+db.sequelize.sync().then(function() {
   app.listen(PORT, function (req, res) {
     console.log('Express Server is Running ' + PORT + '!');
   });
