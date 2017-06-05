@@ -186,7 +186,7 @@ app.delete('/user/login', middleware.requireAuthentication, function (req, res) 
 })
 
 
-db.sequelize.sync({force: true}).then(function() {
+db.sequelize.sync().then(function() {
   app.listen(PORT, function (req, res) {
     console.log('Express Server is Running ' + PORT + '!');
   });
